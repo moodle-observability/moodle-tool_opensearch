@@ -9,6 +9,8 @@ OpenSearch connection, queue and bulk shipping for Moodle (`tool_opensearch`). B
 
 **Status:** 0.1.0 (alpha). Download it from the [releases](https://github.com/moodle-observability/moodle-tool_opensearch/releases).
 
+Example stack and dashboards (OpenSearch Dashboards and Grafana) with the filters of the Moodle logs report: [`examples/`](examples).
+
 Documentation (English and Brazilian Portuguese): https://moodle-observability.github.io/moodle-tool_opensearch/
 
 Requirements: Moodle 5.3 or later; OpenSearch 2.19 or later with the ISM plugin.

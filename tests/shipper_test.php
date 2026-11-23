@@ -180,13 +180,14 @@ final class shipper_test extends \advanced_testcase {
             stream_callbacks::json(200),
             stream_callbacks::json(200, ['acknowledged' => true]),
             stream_callbacks::json(404),
+            stream_callbacks::json(404),
             stream_callbacks::json(201),
             stream_callbacks::json(200),
             stream_callbacks::json(200, ['items' => [['create' => ['status' => 201]]]]),
         ]);
         $this->assertSame(1, (new shipper(config::load()))->run()['sent']);
         $this->assertSame('/_index_template/test-events', $history[1]->getUri()->getPath());
-        $this->assertSame('/_bulk', $history[5]->getUri()->getPath());
+        $this->assertSame('/_bulk', $history[6]->getUri()->getPath());
     }
 
     /**

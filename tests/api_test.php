@@ -88,7 +88,7 @@ final class api_test extends \advanced_testcase {
             'name' => 'login',
             'userid' => 2,
             '@timestamp' => '2026-01-01T00:00:00.000+00:00',
-            'moodle' => ['site' => 'test'],
+            'moodle' => ['site' => 'test', 'shortname' => get_site()->shortname],
         ], json_decode($row->payload, true));
         $this->assertEquals(1767225600, $row->timecreated);
     }
