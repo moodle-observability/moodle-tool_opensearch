@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<XMLDB PATH="admin/tool/opensearch/db" VERSION="20261123" COMMENT="XMLDB file for Moodle admin/tool/opensearch"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="../../../../lib/xmldb/xmldb.xsd"
+>
+  <TABLES>
+    <TABLE NAME="tool_opensearch_queue" COMMENT="Documents waiting to be sent to OpenSearch">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="stream" TYPE="char" LENGTH="64" NOTNULL="true" SEQUENCE="false" COMMENT="Stream name"/>
+        <FIELD NAME="payload" TYPE="text" NOTNULL="true" SEQUENCE="false" COMMENT="Document, already encoded as JSON"/>
+        <FIELD NAME="attempts" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Failed sending attempts"/>
+        <FIELD NAME="nextattempt" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Unix time of the next sending attempt"/>
+        <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+      </KEYS>
+      <INDEXES>
+        <INDEX NAME="streamnextattempt" UNIQUE="false" FIELDS="stream, nextattempt, id"/>
+      </INDEXES>
+    </TABLE>
+    <TABLE NAME="tool_opensearch_stream" COMMENT="State and counters of each stream">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="stream" TYPE="char" LENGTH="64" NOTNULL="true" SEQUENCE="false" COMMENT="Stream name"/>
+        <FIELD NAME="queued" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Documents in the queue at the last sending"/>
+        <FIELD NAME="oldest" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Unix time of the oldest queued document (0 if none)"/>
+        <FIELD NAME="sent" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Documents sent"/>
+        <FIELD NAME="failed" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Documents rejected by OpenSearch"/>
+        <FIELD NAME="dropped" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Documents discarded because the queue was full"/>
+        <FIELD NAME="lastsuccess" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Unix time of the last document sent"/>
+        <FIELD NAME="lasterror" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="Last error, without the document"/>
+        <FIELD NAME="lasterrortime" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="schemahash" TYPE="char" LENGTH="40" NOTNULL="false" SEQUENCE="false" COMMENT="Hash of the index template and policy last sent"/>
+        <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+      </KEYS>
+      <INDEXES>
+        <INDEX NAME="stream" UNIQUE="true" FIELDS="stream"/>
+      </INDEXES>
+    </TABLE>
+  </TABLES>
+</XMLDB>

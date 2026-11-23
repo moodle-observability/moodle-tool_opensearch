@@ -1,29 +1,29 @@
 moodle-tool_opensearch
 ======================
 
-**Conexão, fila e envio em lote ao OpenSearch para o Moodle.**
+**Conexão, fila e envio em lote para o OpenSearch no Moodle.**
 
-Plugin base que envia documentos de plugins do Moodle ao OpenSearch: conexão, autenticação, fila no banco de dados, envio em lote com novas tentativas, data streams com retenção (ISM) e métricas. Sozinho não grava nada: outros plugins, como o ``logstore_opensearch``, produzem os documentos.
+Plugin base que envia ao OpenSearch documentos produzidos por plugins do Moodle. Sozinho não grava nada: outros plugins, como o ``logstore_opensearch``, declaram streams e produzem os documentos.
 
 .. note::
 
-   Fase de planejamento. Ainda não há versão publicada. Acompanhe o andamento nas `issues <https://github.com/moodle-observability/moodle-tool_opensearch/issues>`_.
+   Versão 0.1.0 (alfa). Acompanhe o andamento nas `issues <https://github.com/moodle-observability/moodle-tool_opensearch/issues>`_.
 
-Funcionalidades previstas
--------------------------
+Funcionalidades
+---------------
 
-* Conexão por lista de URLs com autenticação básica ou certificado de cliente (mTLS), CA própria e verificação de TLS; configuração por variáveis de ambiente ou pela página de configurações, senha cifrada.
-* API para outros plugins: ``api::index($stream, $doc)`` só enfileira (nenhuma chamada HTTP durante a requisição da página).
-* Tarefa agendada que envia a fila com ``_bulk``, tratamento do resultado item a item e backoff exponencial; o OpenSearch fora do ar nunca deixa o Moodle lento.
-* Data streams, index templates e políticas de retenção (ISM) por stream, sincronizados automaticamente.
-* Página de teste de conexão e ferramentas de linha de comando.
-* Métricas para o ``tool_prometheus`` (tamanho da fila, documento mais antigo, documentos enviados, com falha e descartados).
+* **Conexão**: um ou mais nós, autenticação básica ou certificado de cliente (mTLS), CA própria e verificação TLS. Configuração por variáveis de ambiente ou pela página de configurações; a senha fica cifrada.
+* **Nenhum HTTP durante a página**: ``api::index()`` guarda os documentos em memória e os grava numa fila no banco no fim da requisição. OpenSearch lento ou fora do ar nunca deixa o Moodle lento.
+* **Envio em lote**: uma tarefa agendada envia a fila com ``_bulk`` a cada minuto e trata cada item: documentos enviados saem da fila, falhas temporárias esperam com backoff exponencial, documentos recusados pelo mapeamento são descartados e contados.
+* **Data streams e retenção**: cada stream é um data stream com mapeamento estrito, ``best_compression`` e política de retenção ISM própria, sincronizados automaticamente.
+* **Teste de conexão**: uma página e um script de linha de comando conferem versão, saúde do cluster, plugin ISM e permissão de escrita.
+* **Métricas** para o ``tool_prometheus``: tamanho e idade da fila, documentos enviados, recusados e descartados, último envio.
 
 Requisitos
 ----------
 
 * Moodle 5.3 ou posterior.
-* Um cluster OpenSearch (2.x) com os plugins de segurança e ISM.
+* OpenSearch 2.19 ou posterior (testado com 2.19 e 3.x), com o plugin ISM. O plugin de segurança é recomendado.
 
 Links
 -----
@@ -39,3 +39,6 @@ Links
    installation
    configuration
    usage
+   streams
+   metrics
+   operations
