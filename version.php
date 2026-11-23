@@ -25,8 +25,8 @@
 defined('MOODLE_INTERNAL') || die();
 
 $plugin->component = 'tool_opensearch';
-$plugin->version = 2026112301;
+$plugin->version = 2026112302;
 $plugin->requires = 2026100500;
 $plugin->supported = [503, 503];
 $plugin->maturity = MATURITY_ALPHA;
-$plugin->release = '0.1.1';
+$plugin->release = '0.1.2';

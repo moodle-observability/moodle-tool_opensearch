@@ -87,7 +87,7 @@ final class stream {
     public function mapping_properties(): array {
         return [
             '@timestamp' => ['type' => 'date'],
-            'moodle' => ['properties' => ['site' => ['type' => 'keyword']]],
+            'moodle' => ['properties' => ['site' => ['type' => 'keyword'], 'shortname' => ['type' => 'keyword']]],
         ] + $this->properties;
     }
 }

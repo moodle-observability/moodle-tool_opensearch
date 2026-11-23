@@ -142,6 +142,7 @@ final class schema_manager {
             }
             try {
                 $this->client->call('PUT', '/_index_template/' . $this->config->data_stream($name), $this->template($stream));
+                $this->put_mapping($stream);
                 $this->put_policy($stream);
                 stats::update($name, ['schemahash' => $hash]);
                 $results[$name] = 'updated';
@@ -180,6 +181,25 @@ final class schema_manager {
             }
         }
         return true;
+    }
+
+    /**
+     * Adds new fields to the backing indices of an existing data stream, so that documents with them are accepted
+     * before the next rollover. Does nothing when the data stream does not exist yet.
+     *
+     * @param stream $stream Stream.
+     * @return void
+     * @throws client_exception When the mapping is incompatible (a field changed type: needs a rollover).
+     */
+    private function put_mapping(stream $stream): void {
+        [$status, $body] = $this->client->request(
+            'PUT',
+            '/' . $this->config->data_stream($stream->name) . '/_mapping',
+            ['properties' => $stream->mapping_properties()]
+        );
+        if ($status !== 404 && ($status < 200 || $status > 299)) {
+            throw client::status_error($status, $body);
+        }
     }
 
     /**

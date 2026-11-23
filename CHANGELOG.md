@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.2 - 2026-11-23
+
+- Every document gets `moodle.shortname`, the short name of the site, to filter sites sharing a cluster.
+- New fields of a stream reach its existing data stream at once (`PUT _mapping`), instead of being rejected
+  until the next rollover.
+- Example stack and dashboards for OpenSearch Dashboards and Grafana in `examples/`, with the filters of the
+  Moodle logs report (documentation: Dashboards).
+
 ## 0.1.1 - 2026-11-23
 
 - Fix: the retention (ISM) policy was not attached to the backing indices of the data streams, so documents

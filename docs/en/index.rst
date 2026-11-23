@@ -42,3 +42,4 @@ Links
    streams
    metrics
    operations
+   dashboards

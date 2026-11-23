@@ -87,22 +87,26 @@ final class schema_manager_test extends \advanced_testcase {
         $history = stream_callbacks::mock([
             stream_callbacks::json(200, ['acknowledged' => true]),
             stream_callbacks::json(404),
+            stream_callbacks::json(404),
             stream_callbacks::json(201),
             stream_callbacks::json(200, ['updated_indices' => 0]),
         ]);
         $manager = new schema_manager(config::load());
         $this->assertFalse($manager->in_sync());
         $this->assertSame(['events' => 'updated'], $manager->sync());
-        $this->assertCount(4, $history);
-        $this->assertSame('/_plugins/_ism/add/.ds-test-events-*', $history[3]->getUri()->getPath());
-        $this->assertSame('PUT', $history[2]->getMethod());
-        $this->assertSame('/_plugins/_ism/policies/test-events-ism', $history[2]->getUri()->getPath());
+        $this->assertCount(5, $history);
+        // No data stream yet: the mapping update is skipped (404).
+        $this->assertSame('/test-events/_mapping', $history[1]->getUri()->getPath());
+        $this->assertSame('PUT', $history[3]->getMethod());
+        $this->assertSame('/_plugins/_ism/policies/test-events-ism', $history[3]->getUri()->getPath());
+        $this->assertSame('/_plugins/_ism/add/.ds-test-events-*', $history[4]->getUri()->getPath());
         $this->assertTrue($manager->in_sync());
         $this->assertSame(['events' => 'unchanged'], $manager->sync());
 
         // The retention changed: the policy is replaced.
         set_config('retention_events', 10, 'tool_opensearch');
         $history = stream_callbacks::mock([
+            stream_callbacks::json(200, ['acknowledged' => true]),
             stream_callbacks::json(200, ['acknowledged' => true]),
             stream_callbacks::json(200, ['_seq_no' => 4, '_primary_term' => 1]),
             stream_callbacks::json(200),
@@ -112,8 +116,25 @@ final class schema_manager_test extends \advanced_testcase {
         // A new client picks up the new answers.
         $manager = new schema_manager(config::load());
         $this->assertSame(['events' => 'updated'], $manager->sync());
-        $this->assertSame('if_seq_no=4&if_primary_term=1', $history[2]->getUri()->getQuery());
-        $this->assertSame('/_plugins/_ism/change_policy/.ds-test-events-*', $history[4]->getUri()->getPath());
+        $this->assertSame(
+            ['properties' => registry::get('events')->mapping_properties()],
+            json_decode((string) $history[1]->getBody(), true)
+        );
+        $this->assertSame('if_seq_no=4&if_primary_term=1', $history[3]->getUri()->getQuery());
+        $this->assertSame('/_plugins/_ism/change_policy/.ds-test-events-*', $history[5]->getUri()->getPath());
+    }
+
+    /**
+     * An incompatible mapping (a field changing type) is reported as the error of the stream.
+     */
+    public function test_sync_mapping_conflict(): void {
+        stream_callbacks::mock([
+            stream_callbacks::json(200, ['acknowledged' => true]),
+            stream_callbacks::json(400, ['error' => ['type' => 'illegal_argument_exception',
+                'reason' => 'mapper [userid] cannot be changed from type [long] to [keyword]']]),
+        ]);
+        $result = (new schema_manager(config::load()))->sync();
+        $this->assertStringContainsString('cannot be changed', $result['events']);
     }
 
     /**

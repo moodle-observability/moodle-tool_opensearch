@@ -36,6 +36,9 @@ final class api {
     /** @var config|null Configuration of this request. */
     private static ?config $config = null;
 
+    /** @var string|null Short name of the site, for this request. */
+    private static ?string $shortname = null;
+
     /**
      * Whether sending is enabled.
      *
@@ -125,6 +128,7 @@ final class api {
      */
     public static function reset(): void {
         self::$config = null;
+        self::$shortname = null;
         registry::reset();
     }
 
@@ -135,6 +139,22 @@ final class api {
      */
     private static function config(): config {
         return self::$config ??= config::load();
+    }
+
+    /**
+     * Short name of the site (front page course), which identifies the site in filters and dashboards.
+     *
+     * @return string Empty during install, before the site exists.
+     */
+    private static function site_shortname(): string {
+        if (self::$shortname === null) {
+            try {
+                self::$shortname = (string) get_site()->shortname;
+            } catch (\Throwable $e) {
+                return '';
+            }
+        }
+        return self::$shortname;
     }
 
     /**
@@ -178,7 +198,8 @@ final class api {
             $doc['@timestamp'] = \core\di::get(\core\clock::class)->now()
                 ->setTimezone(new \DateTimeZone('UTC'))->format('Y-m-d\TH:i:s.vP');
         }
-        $doc['moodle'] = ['site' => $config->prefix] + (is_array($doc['moodle'] ?? null) ? $doc['moodle'] : []);
+        $doc['moodle'] = ['site' => $config->prefix, 'shortname' => self::site_shortname()]
+            + (is_array($doc['moodle'] ?? null) ? $doc['moodle'] : []);
         try {
             return json_encode($doc, JSON_THROW_ON_ERROR | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE
                 | JSON_INVALID_UTF8_SUBSTITUTE);

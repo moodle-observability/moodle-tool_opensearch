@@ -1,0 +1,536 @@
+{
+  "title": "Moodle - log (tool_opensearch)",
+  "uid": "moodle-log",
+  "tags": [
+    "moodle",
+    "opensearch"
+  ],
+  "description": "Moodle logs report filters over the logstore_opensearch data stream.",
+  "timezone": "browser",
+  "time": {
+    "from": "now-24h",
+    "to": "now"
+  },
+  "refresh": "1m",
+  "schemaVersion": 39,
+  "templating": {
+    "list": [
+      {
+        "name": "datasource",
+        "label": "Datasource",
+        "type": "datasource",
+        "query": "grafana-opensearch-datasource",
+        "current": {},
+        "hide": 0
+      },
+      {
+        "name": "shortname",
+        "label": "Moodle",
+        "type": "query",
+        "datasource": {
+          "type": "grafana-opensearch-datasource",
+          "uid": "${datasource}"
+        },
+        "query": "{\"find\": \"terms\", \"field\": \"moodle.shortname\", \"size\": 500}",
+        "definition": "{\"find\": \"terms\", \"field\": \"moodle.shortname\", \"size\": 500}",
+        "refresh": 2,
+        "multi": true,
+        "includeAll": true,
+        "allValue": "*",
+        "current": {
+          "text": "All",
+          "value": "$__all"
+        },
+        "sort": 1,
+        "hide": 0
+      },
+      {
+        "name": "courseid",
+        "label": "Course (id)",
+        "type": "query",
+        "datasource": {
+          "type": "grafana-opensearch-datasource",
+          "uid": "${datasource}"
+        },
+        "query": "{\"find\": \"terms\", \"field\": \"courseid\", \"size\": 500}",
+        "definition": "{\"find\": \"terms\", \"field\": \"courseid\", \"size\": 500}",
+        "refresh": 2,
+        "multi": true,
+        "includeAll": true,
+        "allValue": "*",
+        "current": {
+          "text": "All",
+          "value": "$__all"
+        },
+        "sort": 1,
+        "hide": 0
+      },
+      {
+        "name": "userid",
+        "label": "User (id)",
+        "type": "query",
+        "datasource": {
+          "type": "grafana-opensearch-datasource",
+          "uid": "${datasource}"
+        },
+        "query": "{\"find\": \"terms\", \"field\": \"userid\", \"size\": 500}",
+        "definition": "{\"find\": \"terms\", \"field\": \"userid\", \"size\": 500}",
+        "refresh": 2,
+        "multi": true,
+        "includeAll": true,
+        "allValue": "*",
+        "current": {
+          "text": "All",
+          "value": "$__all"
+        },
+        "sort": 1,
+        "hide": 0
+      },
+      {
+        "name": "cmid",
+        "label": "Activity (cmid)",
+        "type": "query",
+        "datasource": {
+          "type": "grafana-opensearch-datasource",
+          "uid": "${datasource}"
+        },
+        "query": "{\"find\": \"terms\", \"field\": \"contextinstanceid\", \"size\": 500, \"query\": \"contextlevel:70\"}",
+        "definition": "{\"find\": \"terms\", \"field\": \"contextinstanceid\", \"size\": 500, \"query\": \"contextlevel:70\"}",
+        "refresh": 2,
+        "multi": true,
+        "includeAll": true,
+        "allValue": "*",
+        "current": {
+          "text": "All",
+          "value": "$__all"
+        },
+        "sort": 1,
+        "hide": 0
+      },
+      {
+        "name": "crud",
+        "label": "Actions",
+        "type": "query",
+        "datasource": {
+          "type": "grafana-opensearch-datasource",
+          "uid": "${datasource}"
+        },
+        "query": "{\"find\": \"terms\", \"field\": \"crud\", \"size\": 500}",
+        "definition": "{\"find\": \"terms\", \"field\": \"crud\", \"size\": 500}",
+        "refresh": 2,
+        "multi": true,
+        "includeAll": true,
+        "allValue": "*",
+        "current": {
+          "text": "All",
+          "value": "$__all"
+        },
+        "sort": 1,
+        "hide": 0
+      },
+      {
+        "name": "origin",
+        "label": "Origin",
+        "type": "query",
+        "datasource": {
+          "type": "grafana-opensearch-datasource",
+          "uid": "${datasource}"
+        },
+        "query": "{\"find\": \"terms\", \"field\": \"origin\", \"size\": 500}",
+        "definition": "{\"find\": \"terms\", \"field\": \"origin\", \"size\": 500}",
+        "refresh": 2,
+        "multi": true,
+        "includeAll": true,
+        "allValue": "*",
+        "current": {
+          "text": "All",
+          "value": "$__all"
+        },
+        "sort": 1,
+        "hide": 0
+      },
+      {
+        "name": "edulevel",
+        "label": "Event (education level)",
+        "type": "query",
+        "datasource": {
+          "type": "grafana-opensearch-datasource",
+          "uid": "${datasource}"
+        },
+        "query": "{\"find\": \"terms\", \"field\": \"edulevel\", \"size\": 500}",
+        "definition": "{\"find\": \"terms\", \"field\": \"edulevel\", \"size\": 500}",
+        "refresh": 2,
+        "multi": true,
+        "includeAll": true,
+        "allValue": "*",
+        "current": {
+          "text": "All",
+          "value": "$__all"
+        },
+        "sort": 1,
+        "hide": 0
+      },
+      {
+        "name": "eventname",
+        "label": "Event name",
+        "type": "query",
+        "datasource": {
+          "type": "grafana-opensearch-datasource",
+          "uid": "${datasource}"
+        },
+        "query": "{\"find\": \"terms\", \"field\": \"eventname\", \"size\": 500}",
+        "definition": "{\"find\": \"terms\", \"field\": \"eventname\", \"size\": 500}",
+        "refresh": 2,
+        "multi": true,
+        "includeAll": true,
+        "allValue": "*",
+        "current": {
+          "text": "All",
+          "value": "$__all"
+        },
+        "sort": 1,
+        "hide": 0
+      }
+    ]
+  },
+  "panels": [
+    {
+      "id": 1,
+      "type": "stat",
+      "title": "Events in the period",
+      "gridPos": {
+        "x": 0,
+        "y": 0,
+        "w": 6,
+        "h": 8
+      },
+      "datasource": {
+        "type": "grafana-opensearch-datasource",
+        "uid": "${datasource}"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "grafana-opensearch-datasource",
+            "uid": "${datasource}"
+          },
+          "queryType": "lucene",
+          "query": "moodle.shortname:$shortname AND courseid:$courseid AND userid:$userid AND contextinstanceid:$cmid AND crud:$crud AND origin:$origin AND edulevel:$edulevel AND eventname:$eventname",
+          "timeField": "@timestamp",
+          "metrics": [
+            {
+              "id": "1",
+              "type": "count"
+            }
+          ],
+          "bucketAggs": [
+            {
+              "id": "2",
+              "type": "date_histogram",
+              "field": "@timestamp",
+              "settings": {
+                "interval": "auto"
+              }
+            }
+          ]
+        }
+      ],
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "sum"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "colorMode": "value",
+        "graphMode": "area"
+      }
+    },
+    {
+      "id": 2,
+      "type": "timeseries",
+      "title": "Events over time (CRUD)",
+      "gridPos": {
+        "x": 6,
+        "y": 0,
+        "w": 18,
+        "h": 8
+      },
+      "datasource": {
+        "type": "grafana-opensearch-datasource",
+        "uid": "${datasource}"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "grafana-opensearch-datasource",
+            "uid": "${datasource}"
+          },
+          "queryType": "lucene",
+          "query": "moodle.shortname:$shortname AND courseid:$courseid AND userid:$userid AND contextinstanceid:$cmid AND crud:$crud AND origin:$origin AND edulevel:$edulevel AND eventname:$eventname",
+          "timeField": "@timestamp",
+          "metrics": [
+            {
+              "id": "1",
+              "type": "count"
+            }
+          ],
+          "bucketAggs": [
+            {
+              "id": "2",
+              "type": "terms",
+              "field": "crud",
+              "settings": {
+                "size": "5",
+                "order": "desc",
+                "orderBy": "_count",
+                "min_doc_count": "1"
+              }
+            },
+            {
+              "id": "3",
+              "type": "date_histogram",
+              "field": "@timestamp",
+              "settings": {
+                "interval": "auto"
+              }
+            }
+          ]
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "drawStyle": "bars",
+            "stacking": {
+              "mode": "normal"
+            },
+            "fillOpacity": 80
+          }
+        },
+        "overrides": []
+      }
+    },
+    {
+      "id": 3,
+      "type": "table",
+      "title": "Top events",
+      "gridPos": {
+        "x": 0,
+        "y": 8,
+        "w": 12,
+        "h": 10
+      },
+      "datasource": {
+        "type": "grafana-opensearch-datasource",
+        "uid": "${datasource}"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "grafana-opensearch-datasource",
+            "uid": "${datasource}"
+          },
+          "queryType": "lucene",
+          "query": "moodle.shortname:$shortname AND courseid:$courseid AND userid:$userid AND contextinstanceid:$cmid AND crud:$crud AND origin:$origin AND edulevel:$edulevel AND eventname:$eventname",
+          "timeField": "@timestamp",
+          "metrics": [
+            {
+              "id": "1",
+              "type": "count"
+            }
+          ],
+          "bucketAggs": [
+            {
+              "id": "2",
+              "type": "terms",
+              "field": "eventname",
+              "settings": {
+                "size": "20",
+                "order": "desc",
+                "orderBy": "_count",
+                "min_doc_count": "1"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "type": "table",
+      "title": "Events by component",
+      "gridPos": {
+        "x": 12,
+        "y": 8,
+        "w": 6,
+        "h": 10
+      },
+      "datasource": {
+        "type": "grafana-opensearch-datasource",
+        "uid": "${datasource}"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "grafana-opensearch-datasource",
+            "uid": "${datasource}"
+          },
+          "queryType": "lucene",
+          "query": "moodle.shortname:$shortname AND courseid:$courseid AND userid:$userid AND contextinstanceid:$cmid AND crud:$crud AND origin:$origin AND edulevel:$edulevel AND eventname:$eventname",
+          "timeField": "@timestamp",
+          "metrics": [
+            {
+              "id": "1",
+              "type": "count"
+            }
+          ],
+          "bucketAggs": [
+            {
+              "id": "2",
+              "type": "terms",
+              "field": "component",
+              "settings": {
+                "size": "20",
+                "order": "desc",
+                "orderBy": "_count",
+                "min_doc_count": "1"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "type": "table",
+      "title": "Events by origin",
+      "gridPos": {
+        "x": 18,
+        "y": 8,
+        "w": 6,
+        "h": 10
+      },
+      "datasource": {
+        "type": "grafana-opensearch-datasource",
+        "uid": "${datasource}"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "grafana-opensearch-datasource",
+            "uid": "${datasource}"
+          },
+          "queryType": "lucene",
+          "query": "moodle.shortname:$shortname AND courseid:$courseid AND userid:$userid AND contextinstanceid:$cmid AND crud:$crud AND origin:$origin AND edulevel:$edulevel AND eventname:$eventname",
+          "timeField": "@timestamp",
+          "metrics": [
+            {
+              "id": "1",
+              "type": "count"
+            }
+          ],
+          "bucketAggs": [
+            {
+              "id": "2",
+              "type": "terms",
+              "field": "origin",
+              "settings": {
+                "size": "10",
+                "order": "desc",
+                "orderBy": "_count",
+                "min_doc_count": "1"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "type": "table",
+      "title": "Log records",
+      "gridPos": {
+        "x": 0,
+        "y": 18,
+        "w": 24,
+        "h": 14
+      },
+      "datasource": {
+        "type": "grafana-opensearch-datasource",
+        "uid": "${datasource}"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "grafana-opensearch-datasource",
+            "uid": "${datasource}"
+          },
+          "queryType": "lucene",
+          "query": "moodle.shortname:$shortname AND courseid:$courseid AND userid:$userid AND contextinstanceid:$cmid AND crud:$crud AND origin:$origin AND edulevel:$edulevel AND eventname:$eventname",
+          "timeField": "@timestamp",
+          "metrics": [
+            {
+              "id": "1",
+              "type": "raw_data",
+              "settings": {
+                "size": "500"
+              }
+            }
+          ],
+          "bucketAggs": []
+        }
+      ],
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "includeByName": {
+              "@timestamp": true,
+              "moodle.shortname": true,
+              "eventname": true,
+              "component": true,
+              "action": true,
+              "target": true,
+              "crud": true,
+              "edulevel": true,
+              "origin": true,
+              "userid": true,
+              "relateduserid": true,
+              "courseid": true,
+              "contextlevel": true,
+              "contextinstanceid": true,
+              "objectid": true,
+              "ip": true
+            },
+            "indexByName": {
+              "@timestamp": 0,
+              "moodle.shortname": 1,
+              "eventname": 2,
+              "component": 3,
+              "action": 4,
+              "target": 5,
+              "crud": 6,
+              "edulevel": 7,
+              "origin": 8,
+              "userid": 9,
+              "relateduserid": 10,
+              "courseid": 11,
+              "contextlevel": 12,
+              "contextinstanceid": 13,
+              "objectid": 14,
+              "ip": 15
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
