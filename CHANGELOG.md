@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.1 - 2026-11-23
+
+- Fix: the retention (ISM) policy was not attached to the backing indices of the data streams, so documents
+  were never deleted. The `ism_template` now matches the data stream name, and the next sync attaches the policy
+  to the backing indices created by 0.1.0.
+
 ## 0.1.0 - 2026-11-23
 
 First release (alpha).

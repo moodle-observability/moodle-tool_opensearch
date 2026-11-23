@@ -98,7 +98,8 @@ final class schema_manager {
                     ],
                 ],
                 'ism_template' => [
-                    ['index_patterns' => ['.ds-' . $this->config->data_stream($stream->name) . '-*'], 'priority' => 100],
+                    // For data streams, OpenSearch matches the data stream name, not the backing index name.
+                    ['index_patterns' => [$this->config->data_stream($stream->name)], 'priority' => 100],
                 ],
             ],
         ];
@@ -198,13 +199,13 @@ final class schema_manager {
             throw client::status_error($status, $current);
         }
         $this->client->call('PUT', '/_plugins/_ism/policies/' . $id . $query, $this->policy($stream));
+        // The ism_template only applies to indices created after it: attach the policy to existing backing indices
+        // without one (sites upgraded from 0.1.0), and move the managed ones to the new version. Failures here
+        // (no backing index yet, already managed) are expected and ignored.
+        $indices = '/.ds-' . $this->config->data_stream($stream->name) . '-*';
+        $this->client->request('POST', '/_plugins/_ism/add' . $indices, ['policy_id' => $id]);
         if ($query !== '') {
-            // The ism_template only applies to new indices: move the existing ones to the new version.
-            $this->client->request(
-                'POST',
-                '/_plugins/_ism/change_policy/.ds-' . $this->config->data_stream($stream->name) . '-*',
-                ['policy_id' => $id]
-            );
+            $this->client->request('POST', '/_plugins/_ism/change_policy' . $indices, ['policy_id' => $id]);
         }
     }
 }

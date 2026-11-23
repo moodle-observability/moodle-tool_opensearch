@@ -106,5 +106,16 @@ final class integration_test extends \advanced_testcase {
         $this->assertSame($this->prefix, $found['hits']['hits'][0]['_source']['moodle']['site']);
 
         $this->assertSame(1, api::delete_by_query('events', ['term' => ['userid' => 2]]));
+
+        // The retention policy is attached to the backing index (asynchronously, right after its creation).
+        for ($i = 0; $i < 20; $i++) {
+            $explain = (new client($config))->call('GET', '/_plugins/_ism/explain/.ds-' . $this->prefix . '-events-*');
+            $policies = array_column(array_filter($explain, 'is_array'), 'index.plugins.index_state_management.policy_id');
+            if (array_filter($policies)) {
+                break;
+            }
+            usleep(500000);
+        }
+        $this->assertSame([$this->prefix . '-events-ism'], array_values(array_unique($policies)), json_encode($explain));
     }
 }
