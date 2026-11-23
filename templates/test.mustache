@@ -1,0 +1,133 @@
+{{!
+    This file is part of Moodle - https://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+}}
+{{!
+    @template tool_opensearch/test
+
+    Connection test and state of the streams.
+
+    Example context (json):
+    {
+        "enabled": true,
+        "hosts": "https://opensearch:9200",
+        "auth": "Basic",
+        "prefix": "moodle-1a2b3c4d",
+        "configerror": "",
+        "ran": true,
+        "passed": false,
+        "checks": [
+            {"name": "Connection", "ok": true, "message": "opensearch 2.19.1, cluster docker-cluster", "ms": 12},
+            {"name": "Write permission", "ok": false, "message": "Permission denied (403)", "ms": 8}
+        ],
+        "runurl": "#",
+        "settingsurl": "#",
+        "hasstreams": true,
+        "streams": [
+            {"name": "logstore", "datastream": "moodle-1a2b3c4d-logstore", "component": "logstore_opensearch",
+             "retention": 180, "queued": 12, "sent": 1000, "failed": 0, "dropped": 0, "lastsuccess": "Monday",
+             "lasterror": "", "lasterrortime": ""}
+        ]
+    }
+}}
+<div class="tool_opensearch-test">
+    {{#configerror}}
+        <div class="alert alert-danger">{{configerror}}</div>
+    {{/configerror}}
+    {{^enabled}}
+        <div class="alert alert-warning">{{#str}} test_disabled, tool_opensearch {{/str}}</div>
+    {{/enabled}}
+
+    <dl class="row">
+        <dt class="col-sm-3">{{#str}} hosts, tool_opensearch {{/str}}</dt>
+        <dd class="col-sm-9">{{hosts}}</dd>
+        <dt class="col-sm-3">{{#str}} auth, tool_opensearch {{/str}}</dt>
+        <dd class="col-sm-9">{{auth}}</dd>
+        <dt class="col-sm-3">{{#str}} prefix, tool_opensearch {{/str}}</dt>
+        <dd class="col-sm-9"><code>{{prefix}}</code></dd>
+    </dl>
+
+    <p>
+        <a class="btn btn-primary" href="{{runurl}}">{{#str}} test_run, tool_opensearch {{/str}}</a>
+        <a class="btn btn-secondary" href="{{settingsurl}}">{{#str}} settings, tool_opensearch {{/str}}</a>
+    </p>
+
+    {{#ran}}
+        <h3>{{#str}} test_results, tool_opensearch {{/str}}</h3>
+        <div class="alert {{#passed}}alert-success{{/passed}}{{^passed}}alert-danger{{/passed}}">
+            {{#passed}}{{#str}} test_passed, tool_opensearch {{/str}}{{/passed}}
+            {{^passed}}{{#str}} test_failed, tool_opensearch {{/str}}{{/passed}}
+        </div>
+        <table class="table table-sm generaltable">
+            <thead>
+                <tr>
+                    <th scope="col">{{#str}} test_check, tool_opensearch {{/str}}</th>
+                    <th scope="col">{{#str}} test_result, tool_opensearch {{/str}}</th>
+                    <th scope="col">{{#str}} test_time, tool_opensearch {{/str}}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#checks}}
+                    <tr>
+                        <td>
+                            {{#ok}}<span class="badge text-bg-success">{{#str}} ok {{/str}}</span>{{/ok}}
+                            {{^ok}}<span class="badge text-bg-danger">{{#str}} error {{/str}}</span>{{/ok}}
+                            {{name}}
+                        </td>
+                        <td>{{message}}</td>
+                        <td>{{#ms}}{{ms}} ms{{/ms}}</td>
+                    </tr>
+                {{/checks}}
+            </tbody>
+        </table>
+    {{/ran}}
+
+    <h3>{{#str}} streamsheading, tool_opensearch {{/str}}</h3>
+    {{^hasstreams}}
+        <p>{{#str}} streamsheading_none, tool_opensearch {{/str}}</p>
+    {{/hasstreams}}
+    {{#hasstreams}}
+        <table class="table table-sm generaltable">
+            <thead>
+                <tr>
+                    <th scope="col">{{#str}} stream, tool_opensearch {{/str}}</th>
+                    <th scope="col">{{#str}} streamcomponent, tool_opensearch {{/str}}</th>
+                    <th scope="col">{{#str}} streamretention, tool_opensearch {{/str}}</th>
+                    <th scope="col">{{#str}} streamqueued, tool_opensearch {{/str}}</th>
+                    <th scope="col">{{#str}} streamsent, tool_opensearch {{/str}}</th>
+                    <th scope="col">{{#str}} streamfailed, tool_opensearch {{/str}}</th>
+                    <th scope="col">{{#str}} streamdropped, tool_opensearch {{/str}}</th>
+                    <th scope="col">{{#str}} streamlastsuccess, tool_opensearch {{/str}}</th>
+                    <th scope="col">{{#str}} streamlasterror, tool_opensearch {{/str}}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#streams}}
+                    <tr>
+                        <td>{{name}}<br><code class="small">{{datastream}}</code></td>
+                        <td>{{component}}</td>
+                        <td>{{retention}}</td>
+                        <td>{{queued}}</td>
+                        <td>{{sent}}</td>
+                        <td>{{failed}}</td>
+                        <td>{{dropped}}</td>
+                        <td>{{lastsuccess}}</td>
+                        <td>{{#lasterror}}<span class="small">{{lasterror}}</span><br><span class="small text-muted">{{lasterrortime}}</span>{{/lasterror}}</td>
+                    </tr>
+                {{/streams}}
+            </tbody>
+        </table>
+    {{/hasstreams}}
+</div>
