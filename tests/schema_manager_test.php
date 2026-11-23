@@ -77,7 +77,7 @@ final class schema_manager_test extends \advanced_testcase {
         $policy = $manager->policy(registry::get('events'))['policy'];
         $this->assertSame('test-events-ism', $manager->policy_id(registry::get('events')));
         $this->assertSame('7d', $policy['states'][0]['transitions'][0]['conditions']['min_index_age']);
-        $this->assertSame(['.ds-test-events-*'], $policy['ism_template'][0]['index_patterns']);
+        $this->assertSame(['test-events'], $policy['ism_template'][0]['index_patterns']);
     }
 
     /**
@@ -88,11 +88,13 @@ final class schema_manager_test extends \advanced_testcase {
             stream_callbacks::json(200, ['acknowledged' => true]),
             stream_callbacks::json(404),
             stream_callbacks::json(201),
+            stream_callbacks::json(200, ['updated_indices' => 0]),
         ]);
         $manager = new schema_manager(config::load());
         $this->assertFalse($manager->in_sync());
         $this->assertSame(['events' => 'updated'], $manager->sync());
-        $this->assertCount(3, $history);
+        $this->assertCount(4, $history);
+        $this->assertSame('/_plugins/_ism/add/.ds-test-events-*', $history[3]->getUri()->getPath());
         $this->assertSame('PUT', $history[2]->getMethod());
         $this->assertSame('/_plugins/_ism/policies/test-events-ism', $history[2]->getUri()->getPath());
         $this->assertTrue($manager->in_sync());
@@ -105,12 +107,13 @@ final class schema_manager_test extends \advanced_testcase {
             stream_callbacks::json(200, ['_seq_no' => 4, '_primary_term' => 1]),
             stream_callbacks::json(200),
             stream_callbacks::json(200),
+            stream_callbacks::json(200),
         ]);
         // A new client picks up the new answers.
         $manager = new schema_manager(config::load());
         $this->assertSame(['events' => 'updated'], $manager->sync());
         $this->assertSame('if_seq_no=4&if_primary_term=1', $history[2]->getUri()->getQuery());
-        $this->assertSame('/_plugins/_ism/change_policy/.ds-test-events-*', $history[3]->getUri()->getPath());
+        $this->assertSame('/_plugins/_ism/change_policy/.ds-test-events-*', $history[4]->getUri()->getPath());
     }
 
     /**
