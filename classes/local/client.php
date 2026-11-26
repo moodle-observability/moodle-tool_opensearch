@@ -117,6 +117,10 @@ class client {
             $options[RequestOptions::BODY] = $body;
             $options['headers'] = ['Content-Type' => 'application/x-ndjson'];
         }
+        if (isset($options[RequestOptions::BODY])) {
+            // Set here, as a string: guzzlehttp/psr7 2.8 rejects the integer that PrepareBodyMiddleware would set.
+            $options['headers']['Content-Length'] = (string) strlen($options[RequestOptions::BODY]);
+        }
 
         $count = count($this->config->hosts);
         $last = null;

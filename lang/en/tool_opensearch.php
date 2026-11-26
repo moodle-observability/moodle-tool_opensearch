@@ -85,6 +85,7 @@ $string['shards_desc'] = 'Primary shards of each backing index.';
 $string['source'] = 'Configuration';
 $string['source_desc'] = 'Environment variables win over these settings. Set from the environment: {$a->variables}. <a href="{$a->test}">Test the connection</a>.';
 $string['stream'] = 'Stream';
+$string['stream_alerts'] = 'Alerts raised and resolved by tool_taskmonitor, kept for a long time.';
 $string['streamcomponent'] = 'Plugin';
 $string['streamdropped'] = 'Discarded (queue full)';
 $string['streamfailed'] = 'Rejected';

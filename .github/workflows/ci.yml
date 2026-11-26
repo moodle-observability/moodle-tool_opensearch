@@ -78,9 +78,10 @@ jobs:
           echo "NVM_DIR=$HOME/.nvm" >> $GITHUB_ENV
 
       - name: Install moodle-plugin-ci
-        # tool_prometheus is optional; installed to test the metrics callback.
+        # tool_prometheus and tool_taskmonitor are optional; installed to test their callbacks.
         run: |
           moodle-plugin-ci add-plugin moodle-observability/moodle-tool_prometheus
+          moodle-plugin-ci add-plugin moodle-observability/moodle-tool_taskmonitor
           moodle-plugin-ci install --plugin ./plugin --db-host=127.0.0.1
         env:
           DB: ${{ matrix.database }}
