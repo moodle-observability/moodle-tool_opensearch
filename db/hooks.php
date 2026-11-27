@@ -30,4 +30,13 @@ $callbacks = [
         'hook' => \tool_prometheus\hook\collect_metrics::class,
         'callback' => [\tool_opensearch\hook_callbacks::class, 'collect_metrics'],
     ],
+    // The "alerts" stream: tool_taskmonitor alerts kept in OpenSearch (ignored without tool_taskmonitor).
+    [
+        'hook' => \tool_opensearch\hook\register_streams::class,
+        'callback' => [\tool_opensearch\hook_callbacks::class, 'register_streams'],
+    ],
+    [
+        'hook' => \tool_taskmonitor\hook\alert_raised::class,
+        'callback' => [\tool_opensearch\hook_callbacks::class, 'alert_raised'],
+    ],
 ];

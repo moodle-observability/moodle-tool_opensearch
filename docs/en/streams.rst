@@ -58,3 +58,8 @@ Each producer declares in its own privacy provider the personal data it sends (`
    \tool_opensearch\api::delete_by_query('example', ['term' => ['userid' => $userid]]);
 
 Both throw ``\tool_opensearch\local\client_exception`` when the cluster cannot answer.
+
+Alerts of tool_taskmonitor
+--------------------------
+
+With ``tool_taskmonitor`` installed, ``tool_opensearch`` declares its own ``alerts`` stream (365 days by default) and sends every alert raised or resolved by ``tool_taskmonitor`` to it, right away (or through the queue when the cluster does not answer). The alerts are then kept much longer than in Moodle. Fields: ``alert_id``, ``type``, ``severity``, ``state`` (``raised`` or ``resolved``), ``title``, ``details`` and ``since`` (when the alert started).

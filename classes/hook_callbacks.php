@@ -26,6 +26,58 @@ use tool_opensearch\local\stats;
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 final class hook_callbacks {
+    /** Stream of the tool_taskmonitor alerts. */
+    public const ALERTS_STREAM = 'alerts';
+
+    /** Default retention of the alerts, in days. */
+    public const ALERTS_RETENTION = 365;
+
+    /**
+     * Declares the "alerts" stream when tool_taskmonitor is installed.
+     *
+     * @param hook\register_streams $hook Hook.
+     * @return void
+     */
+    public static function register_streams(hook\register_streams $hook): void {
+        if (!class_exists(\tool_taskmonitor\hook\alert_raised::class)) {
+            return;
+        }
+        $keyword = ['type' => 'keyword'];
+        $hook->add_stream('tool_opensearch', self::ALERTS_STREAM, [
+            'alert_id' => $keyword,
+            'type' => $keyword,
+            'severity' => $keyword,
+            'state' => $keyword,
+            'title' => ['type' => 'text', 'fields' => ['keyword' => ['type' => 'keyword', 'ignore_above' => 512]]],
+            'details' => ['type' => 'text'],
+            'since' => ['type' => 'date', 'format' => 'epoch_second'],
+        ], self::ALERTS_RETENTION, get_string('stream_alerts', 'tool_opensearch'));
+    }
+
+    /**
+     * Sends each alert raised or resolved by tool_taskmonitor to the "alerts" stream (kept longer than in Moodle).
+     *
+     * Sent right away (short timeout) and queued when that fails; never breaks the delivery of the alert.
+     *
+     * @param \tool_taskmonitor\hook\alert_raised $hook Hook.
+     * @return void
+     */
+    public static function alert_raised(\tool_taskmonitor\hook\alert_raised $hook): void {
+        if (!api::is_enabled()) {
+            return;
+        }
+        $alert = $hook->get_alert();
+        api::index_now(self::ALERTS_STREAM, [
+            'alert_id' => (string) ($alert['id'] ?? ''),
+            'type' => (string) ($alert['type'] ?? ''),
+            'severity' => (string) ($alert['severity'] ?? ''),
+            'state' => $hook->get_state(),
+            'title' => (string) ($alert['title'] ?? ''),
+            'details' => (string) ($alert['details'] ?? ''),
+            'since' => isset($alert['since']) ? (int) $alert['since'] : null,
+        ]);
+    }
+
     /**
      * Queue and sending metrics for tool_prometheus, read from {tool_opensearch_stream} only (no COUNT on the queue).
      *

@@ -75,6 +75,8 @@ final class client_test extends \advanced_testcase {
         $this->assertSame('Basic ' . base64_encode('moodle:s3cret'), $request->getHeaderLine('Authorization'));
         $this->assertSame('application/json', $request->getHeaderLine('Content-Type'));
         $this->assertSame('{"a":1}', (string) $request->getBody());
+        // Set by the client, as a string (guzzlehttp/psr7 2.8 rejects the integer set by Guzzle).
+        $this->assertSame('7', $request->getHeaderLine('Content-Length'));
     }
 
     /**

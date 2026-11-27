@@ -8,7 +8,7 @@ Feature: OpenSearch connection test page
     Given I log in as "admin"
     When I navigate to "Plugins > Admin tools > OpenSearch > Connection test" in site administration
     Then I should see "Sending is disabled"
-    And I should see "No installed plugin declares a stream yet."
+    And I should see "Streams"
     And I click on "Run the test" "link"
     And I should see "No OpenSearch host is configured."
     And I should see "Some checks failed."

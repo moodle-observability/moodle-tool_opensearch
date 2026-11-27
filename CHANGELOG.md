@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.2.0 - 2026-11-26
+
+- Fix: `_bulk` failed with guzzlehttp/psr7 2.8 (Moodle 5.3.1+): the client now sets `Content-Length` as a string.
+- `alerts` stream: with tool_taskmonitor installed, every alert raised or resolved is sent to OpenSearch (365 days
+  of retention by default), through the `alert_raised` hook.
+
 ## 0.1.2 - 2026-11-23
 
 - Every document gets `moodle.shortname`, the short name of the site, to filter sites sharing a cluster.
